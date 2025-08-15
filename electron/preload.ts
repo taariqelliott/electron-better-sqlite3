@@ -1,59 +1,34 @@
-import { ipcRenderer, contextBridge } from "electron";
-import * as fs from "node:fs";
-const sqlite3 = require("better-sqlite3");
-const db = new sqlite3("./demo.db", { verbose: console.log() });
-
-// --------- Expose some API to the Renderer process ---------
-contextBridge.exposeInMainWorld("ipcRenderer", {
-  on(...args: Parameters<typeof ipcRenderer.on>) {
-    const [channel, listener] = args;
-    return ipcRenderer.on(channel, (event, ...args) =>
-      listener(event, ...args)
-    );
-  },
-  off(...args: Parameters<typeof ipcRenderer.off>) {
-    const [channel, ...omit] = args;
-    return ipcRenderer.off(channel, ...omit);
-  },
-  send(...args: Parameters<typeof ipcRenderer.send>) {
-    const [channel, ...omit] = args;
-    return ipcRenderer.send(channel, ...omit);
-  },
-  invoke(...args: Parameters<typeof ipcRenderer.invoke>) {
-    const [channel, ...omit] = args;
-    return ipcRenderer.invoke(channel, ...omit);
-  },
-
-  // You can expose other APTs you need here.
-  // ...
-});
+import { ipcRenderer, contextBridge, IpcRendererEvent } from "electron";
 
 const API = {
-  getNums: (num: number) => {
+  getNums: (num: number): void => {
     ipcRenderer.send("num", num);
   },
-  getDB: () => {
-    const stmt = db.prepare("SELECT * FROM customers").all();
-    return stmt;
-  },
-  addToDb: (name: string) => {
-    const insertQuery = db.prepare("INSERT INTO customers (name) VALUES (?)");
-    insertQuery.run(name);
-  },
-  getFilePath: (file: File) => {
-    fs.readFile(file.path, "utf8", () => {
-      console.log("File contents:", file.path);
-    });
-  },
-  readDirectory: (directory: File) => {
-    fs.readdir(directory.path, { recursive: true }, (err, files) => {
-      if (err) console.log(err);
-      else {
-        console.log("Current directory filenames:");
-        files.forEach((file) => console.log(file));
-      }
-    });
-  },
+  getDB: (): Promise<any> => ipcRenderer.invoke("db-get-customers"),
+  addToDb: (uuid: string, name: string): Promise<any> =>
+    ipcRenderer.invoke("db-add-customer", uuid, name),
+  deleteFromDb: (uuid: string, name: string): Promise<any> =>
+    ipcRenderer.invoke("db-delete-customer", uuid, name),
+  readDirectory: (filePath: string): Promise<string[]> =>
+    ipcRenderer.invoke("read-directory", filePath),
 };
+
+contextBridge.exposeInMainWorld("ipcRenderer", {
+  on(
+    channel: string,
+    listener: (event: IpcRendererEvent, ...args: any[]) => void
+  ): void {
+    ipcRenderer.on(channel, listener);
+  },
+  off(channel: string, listener: (...args: any[]) => void): void {
+    ipcRenderer.off(channel, listener);
+  },
+  send(channel: string, ...args: any[]): void {
+    ipcRenderer.send(channel, ...args);
+  },
+  invoke(channel: string, ...args: any[]): Promise<any> {
+    return ipcRenderer.invoke(channel, ...args);
+  },
+});
 
 contextBridge.exposeInMainWorld("electronAPI", API);
