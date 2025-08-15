@@ -1,5 +1,5 @@
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
-import { faker } from "@faker-js/faker";
+import { v4 as uuidv4 } from "uuid";
 
 declare global {
   interface Window {
@@ -57,10 +57,7 @@ export default function App() {
     }
 
     try {
-      const result = await window.electronAPI.addToDb(
-        faker.string.uuid(),
-        name.trim()
-      );
+      const result = await window.electronAPI.addToDb(uuidv4(), name.trim());
       if (result.success) {
         await getDBData();
         setName("");
