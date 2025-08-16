@@ -34,6 +34,8 @@ node_modules/.bin/electron-rebuild
 npm run dev
 ```
 
+> **Note:** While testing and running in development, the SQLite database (`demo.db`) will be located in the root directory of the project.
+
 ---
 
 ## Building the App
@@ -60,7 +62,11 @@ npm run build
 npm run make
 ```
 
-After running `npm run make`, your packaged files will be available in the `out` directory.
+After running `npm run make` and installing the packaged app, the database will be located in the system's Application Support folder under:
+
+```
+Application Support/electron-better-sqlite3/demo.db
+```
 
 ---
 
