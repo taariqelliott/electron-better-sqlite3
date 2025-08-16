@@ -109,7 +109,7 @@ export default function App() {
           </button>
         </div>
         <div className="flex-1">
-          <a className="btn btn-ghost text-xl">Electron-SQLite</a>
+          <a className="btn btn-ghost text-xl">electron-better-sqlite3</a>
         </div>
         <div className="flex-none">
           <button className="btn btn-square btn-ghost">
