@@ -4,5 +4,5 @@
   themes:
     light --default,
     dark --prefersdark,
-    dim;
+    dim; /* theme name */
 }

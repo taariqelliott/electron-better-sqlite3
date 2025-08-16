@@ -7,13 +7,13 @@ This template provides a ready-to-use starting point for building modern Electro
 - **BetterSQLite3** for fast, synchronous SQLite access
 - **DaisyUI** for beautiful Tailwind-based components
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Clone the repository
 
 ```bash
-git clone <your-repo-url>
-cd <your-repo-folder>
+git clone https://github.com/taariqelliott/electron-better-sqlite3
+cd electron-better-sqlite3
 ```
 
 ### 2. Install dependencies
@@ -36,7 +36,7 @@ npm run dev
 
 ---
 
-## 📦 Building the App
+## Building the App
 
 ### Build production React assets
 
@@ -46,7 +46,7 @@ npm run build
 
 ---
 
-## 📂 Packaging the App
+## Packaging the App
 
 1. Build production assets:
 
@@ -64,4 +64,34 @@ After running `npm run make`, your packaged files will be available in the `out`
 
 ---
 
-**Enjoy building!** 🎉
+## Changing the DaisyUI Theme
+
+This template uses the **`dim`** theme by default. You can customize it by changing the `data-theme` value in `index.html` and updating the theme list in `index.css`.
+
+### To apply a theme:
+
+1. In `index.html`, update the `data-theme` attribute:
+
+```html
+<html data-theme="dim"></html>
+```
+
+2. In `index.css`, configure DaisyUI themes:
+
+```css
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes:
+    light --default,
+    dim; /* replace 'dim' with your chosen theme name */
+}
+```
+
+3. Or create your own custom theme by defining colors, fonts, and other variables in the same section.
+
+For a list of preset themes, visit [DaisyUI Themes](https://daisyui.com/docs/themes/).
+
+---
+
+Enjoy building and styling your app! 🎨
